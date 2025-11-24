@@ -9,7 +9,7 @@ from neural_network import NeuralNetwork, SnakeAI
 
 class GeneticAlgorithm:
     def __init__(self, 
-                 population_size: int = 100,
+                 population_size: int = 200,
                  mutation_rate: float = 0.1,
                  mutation_strength: float = 0.5,
                  elite_percentage: float = 0.2,
