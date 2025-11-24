@@ -16,12 +16,12 @@ def train_snake_ai():
     
     # OPTIMIZED parameters for MAXIMUM performance
     ga = GeneticAlgorithm(
-        population_size=200,     # 🚀 MAXIMUM diversity (2x original)
+        population_size=500,     # 🚀 MAXIMUM diversity (2x original)
         mutation_rate=0.2,       # 🧬 HIGH exploration (2x original)
         mutation_strength=0.25,  # 💫 Subtle but frequent changes
         elite_percentage=0.1,    # 🏆 MINIMAL elitismo (50% less)
         crossover_rate=0.9,      # 🔄 MAXIMUM recombination
-        games_per_individual=7   # 🎮 PRECISE evaluation (2.3x original)
+        games_per_individual=8   # 🎮 PRECISE evaluation (2.3x original)
     )
     
     print(f"🔥 OPTIMIZED Training parameters:")

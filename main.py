@@ -57,7 +57,7 @@ def train_ai(args):
     print(f"Best model saved to: models/best_snake_final.pkl")
     print(f"Training history saved to: models/training_history.pkl")
 
-def play_with_ai(model_path: str, visual: bool = True, games: int = 1):
+def play_with_ai(model_path: str, visual: bool = True, games: int = 1, speed: int = 30):
     """Play game with trained AI"""
     print(f"Loading AI model from: {model_path}")
     
@@ -78,7 +78,7 @@ def play_with_ai(model_path: str, visual: bool = True, games: int = 1):
     for game_num in range(games):
         print(f"\nGame {game_num + 1}/{games}")
         
-        game = SnakeGame(speed=10 if visual else 1000)
+        game = SnakeGame(speed=speed if visual else 1000)
         if visual:
             game.init_display()
         
@@ -172,8 +172,8 @@ def play_with_ai(model_path: str, visual: bool = True, games: int = 1):
                         game.screen.blit(self_text, text_pos)
                         break
                         
-            elif game.steps >= game.max_steps:
-                death_cause = "Max Steps Reached"
+            elif game.steps_since_food >= game.max_steps_without_food:
+                death_cause = "Max Steps Without Food"
                 # Draw timeout warning
                 center = collision_rect.center
                 pygame.draw.rect(game.screen, (255, 165, 0), collision_rect, 4)
@@ -185,9 +185,9 @@ def play_with_ai(model_path: str, visual: bool = True, games: int = 1):
                 pygame.draw.line(game.screen, (255, 165, 0), center, 
                                (center[0] + game.block_size // 5, center[1]), 2)
                 
-                # Draw "TIME!" text
+                # Draw "NO FOOD!" text
                 font_collision = pygame.font.Font(None, 24)
-                time_text = font_collision.render("TIME!", True, (255, 165, 0))
+                time_text = font_collision.render("NO FOOD!", True, (255, 165, 0))
                 text_pos = (center[0] - time_text.get_width() // 2, center[1] - 35)
                 game.screen.blit(time_text, text_pos)
                 
@@ -379,6 +379,10 @@ def main():
                            help='Run without visual display (faster)')
     play_parser.add_argument('--games', type=int, default=1,
                            help='Number of games to play (default: 1)')
+    play_parser.add_argument('--speed', type=int, default=30,
+                           help='Game speed for visual mode (default: 30, higher = faster)')
+    play_parser.add_argument('--turbo', action='store_true',
+                           help='Turbo mode: very fast visual (speed=100)')
     
     # Human command
     subparsers.add_parser('human', help='Play as human')
@@ -394,7 +398,11 @@ def main():
     if args.command == 'train':
         train_ai(args)
     elif args.command == 'play':
-        play_with_ai(args.model, visual=not args.no_visual, games=args.games)
+        if args.turbo:
+            speed = 100
+        else:
+            speed = args.speed
+        play_with_ai(args.model, visual=not args.no_visual, games=args.games, speed=speed)
     elif args.command == 'human':
         play_human()
     elif args.command == 'demo':

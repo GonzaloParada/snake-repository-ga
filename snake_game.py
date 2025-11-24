@@ -11,7 +11,7 @@ class Direction(Enum):
     LEFT = 3
 
 class SnakeGame:
-    def __init__(self, width: int = 640, height: int = 480, block_size: int = 20, speed: int = 10, headless: bool = False):
+    def __init__(self, width: int = 640, height: int = 480, block_size: int = 20, speed: int = 30, headless: bool = False):
         self.width = width
         self.height = height
         self.block_size = block_size
@@ -54,7 +54,8 @@ class SnakeGame:
         # Game state
         self.score = 0
         self.steps = 0
-        self.max_steps = self.grid_width * self.grid_height * 2  # Prevent infinite loops
+        self.steps_since_food = 0  # Track steps since last food to prevent infinite loops
+        self.max_steps_without_food = 200  # Allow 200 steps without eating before timeout
         self.game_over = False
         
         return self.get_state()
@@ -148,6 +149,7 @@ class SnakeGame:
         Returns: (new_state, reward, done)
         """
         self.steps += 1
+        self.steps_since_food += 1
         
         # Update direction based on action
         if action == 1:  # Turn right
@@ -181,13 +183,14 @@ class SnakeGame:
             self.score += 1
             reward = 10  # Positive reward for eating food
             self.food = self._place_food()
+            self.steps_since_food = 0  # Reset steps since food
         else:
             # Remove tail if no food eaten
             self.snake.pop()
             reward = 0  # Small positive reward for staying alive
         
         # Check if too many steps without progress
-        if self.steps > self.max_steps:
+        if self.steps_since_food > self.max_steps_without_food:
             self.game_over = True
             return self.get_state(), -5, True
         
