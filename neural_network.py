@@ -3,7 +3,7 @@ import pickle
 from typing import List, Tuple
 
 class NeuralNetwork:
-    def __init__(self, input_size: int = 11, hidden_sizes: List[int] = [16, 12], output_size: int = 3):
+    def __init__(self, input_size: int = 11, hidden_sizes: List[int] = [24, 16], output_size: int = 3):
         """
         Initialize neural network
         input_size: Size of input layer (game state features)
